@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Homework 2 Solution</title>
+    <script src="d3.v4.js"></script>
+    <style>
+        .barChart {
+            fill: steelblue;
+            stroke: darkgray;
+            stroke-width: 1px;
+        }
+
+        /*.barChart ~ rect:hover {*/
+            /*fill: seagreen;*/
+        /*}*/
+
+        .lines {
+            stroke: steelblue;
+            fill: none
+        }
+
+        .areas {
+            stroke: none;
+            fill: steelblue
+        }
+
+        circle {
+            fill: steelblue;
+        }
+
+        .frame {
+            fill: none;
+            stroke: black;
+            stroke-width: 2px;
+        }
+
+        /* Styles that clean up the layout;
+         * you can ignore these */
+        div {
+            display: inline-block;
+            border: 1px solid lightgray;
+            margin: 1em;
+        }
+
+        div, span {
+            padding: 1em;
+        }
+
+        .tooltip {
+            position: absolute;
+            pointer-events: none;
+            border:none;
+            font: 11px sans-serif;
+        }
+
+    </style>
+    <script src="script.js"></script>
+</head>
+<body>
+<body onload="changeData()">
+
+<h3>CS-5630 / CS-6630 Homework 2</h3>
+<span>Debjyoti Paul</span>
+<span>deb@cs.utah.edu</span>
+<span>u0992708</span>
+
+<br/>
+<hr/>
+<br/>
+
+<span>
+    <button onclick="staircase()">Staircase</button>
+</span>
+
+<span>
+    <label>Dataset:</label>
+    <select id="dataset" onchange="changeData()">
+        <option value="anscombe_I">Anscombe's Quartet I</option>
+        <option selected value="anscombe_II">Anscombe's Quartet II</option>
+        <option value="anscombe_III">Anscombe's Quartet III</option>
+        <option value="anscombe_IV">Anscombe's Quartet IV</option>
+    </select>
+</span>
+
+<span>
+    <input type="checkbox" id="random"> Random Subset
+</span>
+
+<br/>
+
+<div>
+    <h2>Bar Charts</h2>
+    <svg id="barchart1" width="200" height="200">
+        <g transform="rotate(-90) translate(-200,0)">
+        <rect x="50" y="50" width="100.0" height="10"
+              class="barChart"/>
+        <rect x="50" y="60" width="80" height="10"
+              class="barChart"/>
+        <rect x="50" y="70" width="130" height="10"
+              class="barChart"/>
+        <rect x="50" y="80" width="90" height="10"
+              class="barChart"/>
+        <rect x="50" y="90" width="110" height="10"
+              class="barChart"/>
+        <rect x="50" y="100" width="140" height="10"
+              class="barChart"/>
+        <rect x="50" y="110" width="60" height="10"
+              class="barChart"/>
+        <rect x="50" y="120" width="40" height="10"
+              class="barChart"/>
+        <rect x="50" y="130" width="120" height="10"
+              class="barChart"/>
+        <rect x="50" y="140" width="70" height="10"
+              class="barChart"/>
+        <rect x="50" y="150" width="50" height="10"
+              class="barChart"/>
+        </g>
+    </svg>
+
+    <svg id="barchart2" width="200" height="200">
+        <g transform="rotate(-90) translate(-200,0)">
+        <rect x="50" y="50" width="80.4" height="10"
+              class="barChart"/>
+        <rect x="50" y="60" width="69.5" height="10"
+              class="barChart"/>
+        <rect x="50" y="70" width="75.8" height="10"
+              class="barChart"/>
+        <rect x="50" y="80" width="88.1" height="10"
+              class="barChart"/>
+        <rect x="50" y="90" width="83.3" height="10"
+              class="barChart"/>
+        <rect x="50" y="100" width="99.6" height="10"
+              class="barChart"/>
+        <rect x="50" y="110" width="72.4" height="10"
+              class="barChart"/>
+        <rect x="50" y="120" width="42.6" height="10"
+              class="barChart"/>
+        <rect x="50" y="130" width="108.4" height="10"
+              class="barChart"/>
+        <rect x="50" y="140" width="48.2" height="10"
+              class="barChart"/>
+        <rect x="50" y="150" width="56.8" height="10"
+              class="barChart"/>
+            </g>
+    </svg>
+</div>
+
+<div>
+    <h2>Line Charts</h2>
+
+    <svg width="200" height="200" >
+        <!-- Paste your HW 1 solution here -->
+            <path transform="rotate(180) scale(-1.5,1) translate(0,-150)"  id="linechart1" class="lines" d="M0,107.14285714285714L10,85.71428571428571L20,139.28571428571428L29.999999999999996,96.42857142857143L40,117.85714285714286L50,150L59.99999999999999,64.28571428571428L70,42.857142857142854L80,128.57142857142856L90,75L100,53.57142857142857"/>
+    </svg>
+
+
+    <svg width="200" height="200">
+        <!-- Paste your HW 1 solution here -->
+        <path transform="rotate(180) scale(-1.5,1) translate(0,-150)" id="linechart2" class="lines" d="M0,148.0561555075594L10,131.8574514038877L20,141.57667386609072L29.999999999999996,142.06263498920086L40,150L50,131.2095032397408L59.99999999999999,99.29805615550755L70,50.2159827213823L80,147.8941684665227L90,117.60259179265658L100,76.7818574514039"/>
+    </svg>
+</div>
+
+<div>
+    <h2>Area Charts</h2>
+
+    <svg width="200" height="200">
+        <!-- Paste your HW 1 solution here -->
+        <g transform="rotate(180) scale(-1.5,1) translate(10,-200)">
+            <path class="areas" id="areachart1" d="M0,107.14285714285714L10,85.71428571428571L20,139.28571428571428L29.999999999999996,96.42857142857143L40,117.85714285714286L50,150L59.99999999999999,64.28571428571428L70,42.857142857142854L80,128.57142857142856L90,75L100,53.57142857142857L100,0L90,0L80,0L70,0L59.99999999999999,0L50,0L40,0L29.999999999999996,0L20,0L10,0L0,0Z"/>
+        </g>
+    </svg>
+
+    <svg width="200" height="200">
+        <!-- Paste your HW 1 solution here -->
+        <g transform="rotate(180) scale(-1.5,1) translate(10,-200)">
+            <path class="areas" id="areachart2" d="M0,148.0561555075594L10,131.8574514038877L20,141.57667386609072L29.999999999999996,142.06263498920086L40,150L50,131.2095032397408L59.99999999999999,99.29805615550755L70,50.2159827213823L80,147.8941684665227L90,117.60259179265658L100,76.7818574514039L100,0L90,0L80,0L70,0L59.99999999999999,0L50,0L40,0L29.999999999999996,0L20,0L10,0L0,0Z"/>
+        </g>
+    </svg>
+</div>
+
+<div>
+    <h2>Scatterplot</h2>
+
+    <svg id="scatterplot" width="200" height="200">
+        <g transform="scale(1,-1) translate(0,-200)">
+            <path class="frame" d="M 0 0 L 200 0 L 200 200 L 0 200 Z"/>
+            <circle cx="100" cy="80.4" r="5"/>
+            <circle cx="80" cy="69.5" r="5"/>
+            <circle cx="130" cy="75.8" r="5"/>
+            <circle cx="90" cy="88.1" r="5"/>
+            <circle cx="110" cy="83.3" r="5"/>
+            <circle cx="140" cy="99.6" r="5"/>
+            <circle cx="60" cy="72.4" r="5"/>
+            <circle cx="40" cy="42.6" r="5"/>
+            <circle cx="120" cy="108.4" r="5"/>
+            <circle cx="70" cy="48.2" r="5"/>
+            <circle cx="50" cy="56.8" r="5"/>
+        </g>
+    </svg>
+</div>
+</body>
+</html>
