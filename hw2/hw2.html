@@ -58,7 +58,7 @@
     <script src="script.js"></script>
 </head>
 <body>
-<body onload="changeData()">
+<body onload="changeData();">
 
 <h3>CS-5630 / CS-6630 Homework 2</h3>
 <span>Debjyoti Paul</span>
@@ -91,8 +91,8 @@
 
 <div>
     <h2>Bar Charts</h2>
-    <svg id="barchart1" width="200" height="200">
-        <g transform="rotate(-90) translate(-200,0)">
+    <svg  width="200" height="200">
+        <g  id="barchart1" transform="rotate(-90) translate(-200,0)">
         <rect x="50" y="50" width="100.0" height="10"
               class="barChart"/>
         <rect x="50" y="60" width="80" height="10"
@@ -118,8 +118,8 @@
         </g>
     </svg>
 
-    <svg id="barchart2" width="200" height="200">
-        <g transform="rotate(-90) translate(-200,0)">
+    <svg  width="200" height="200">
+        <g id="barchart2" transform="rotate(-90) translate(-200,0)">
         <rect x="50" y="50" width="80.4" height="10"
               class="barChart"/>
         <rect x="50" y="60" width="69.5" height="10"
@@ -199,5 +199,6 @@
         </g>
     </svg>
 </div>
+<div class="tooltip" style="opacity: 0"></div>
 </body>
 </html>

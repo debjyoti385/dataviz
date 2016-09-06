@@ -9,7 +9,7 @@ function staircase() {
     rect_width = 10;
     for (var i=0;  i<rectangles.length; i++){
         console.log(rectangles[i]);
-        rectangles[i].setAttribute("width", (rect_width)+"px");
+        rectangles[i].setAttribute("width", rect_width);
         rect_width = rect_width + 10;
     }
 }
@@ -20,7 +20,7 @@ function colorchange(){
     var rectangles = svgElement.getElementsByTagName("rect");
     for(var i=0; i< rectangles.length;i++){
         console.log("I am changing the color " + rectangles[i]);
-        rectangles[i].onmouseover = function(){this.style.fill="black"};
+        rectangles[i].onmouseover = function(){this.style.fill="seagreen"};
         rectangles[i].onmouseout = function(){this.style.fill="steelblue"};
     }
 }
@@ -69,31 +69,85 @@ function update(error, data) {
 
     // TODO: Select and update the 'a' bar chart bars
     var svgbarchart1 = d3.select("#barchart1");
-    console.log(data);
+
     var selection1 = svgbarchart1.selectAll("rect").data(data);
+
+    var enterselection =  selection1
+        .enter()
+        .append("rect")
+        .attr("x",50)
+        .attr("y", function (d,i) {
+            return 50 + i * 10;
+        });
+
         selection1
             .transition()
             .duration(1500)
-            .attr("width",function(d,i){return d.a *10});
+            .attr("height",10)
+            .attr("width",function(d,i){return d.a*10})
+            .attr("class","barChart");
 
+        selection1.exit()
+            .attr("opacity", 1)
+            .transition()
+            .duration(1500)
+            .attr("opacity", 0)
+            .remove();
 
+    selection1 = enterselection.merge(selection1);
+
+    selection1
+        .attr("x",50)
+        .attr("y", function (d,i) {
+            return 50 + i * 10;
+        })
+        .attr("height",10)
+        .transition()
+        .duration(1500)
+        .attr("class","barChart")
+        .attr("width",function(d,i){return d.a *10});
 
     // TODO: Select and update the 'b' bar chart bars
     var svgbarchart2 = d3.select("#barchart2");
     console.log(data);
     var  selection2 = svgbarchart2.selectAll("rect").data(data);
+
+    enterselection =  selection2
+        .enter()
+        .append("rect")
+        .attr("x",50)
+        .attr("y", function (d,i) {
+            return 50 + i * 10;
+        });
+
         selection2
             .transition()
             .duration(1500)
-            .attr("width",function(d,i){return d.b *10});
+            .attr("width",function(d,i){return d.b *10})
+            .attr("class","barChart");
 
+        selection2.exit()
+            .attr("opacity", 1)
+            .transition()
+            .duration(1500)
+            .attr("opacity", 0)
+            .remove();
+
+    selection2 = enterselection.merge(selection2);
+
+    selection2
+        .attr("x",50)
+        .attr("y", function (d,i) {
+            return 50 + i * 10;
+        })
+        .attr("height",10)
+        .transition()
+        .duration(1500)
+        .attr("class","barChart")
+        .attr("width",function(d,i){return d.b *10});
 
 
     // TODO: Select and update the 'a' line chart path using this line generator
-
-
-
-
 
     var aLineGenerator = d3.line()
         .x(function (d, i) {
@@ -156,8 +210,7 @@ function update(error, data) {
     // TODO: Select and update the 'b' area chart path (create your own generator)
 
     var areachartsvg1 = d3.select("#areachart1");
-    console.log(data);
-    console.log(areachartsvg1);
+    
     var selection5 = areachartsvg1
         .transition()
         .duration(1500)
@@ -179,13 +232,19 @@ function update(error, data) {
 
 
     // add the tooltip area to the webpage
-    var tooltip = d3.select("body").append("div")
-        .attr("class", "tooltip")
+    var tooltip = d3.select(".tooltip")
         .style("opacity", 0);
 
     var svgscatterplot = d3.select("#scatterplot");
     console.log(data);
     var selection7 = svgscatterplot.selectAll("circle").data(data);
+
+    enterselection = selection7
+            .enter().append("circle")
+            .attr("cx",function(d,i){return d.a *10})
+            .attr("cy",function(d,i){return d.b *10})
+            .attr("r",5);
+
         selection7
             .on("mouseover", function(d) {
                 tooltip.transition()
@@ -203,12 +262,36 @@ function update(error, data) {
             .transition()
             .duration(1000)
             .attr("cx",function(d,i){return d.a *10})
-            .attr("cy",function(d,i){return d.b *10});
+            .attr("cy",function(d,i){return d.b *10})
+            .attr("r",5);
 
+        selection7.exit()
+            .attr("opacity",1)
+            .transition()
+            .duration(1500)
+            .attr("opacity",0)
+            .remove();
 
+    selection7 = enterselection.merge(selection7);
 
-
-
+    selection7
+        .on("mouseover", function(d) {
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", .9);
+            tooltip.html( "(" + d.a + ",  " + d.b +")" )
+                .style("left", (d3.event.pageX -0) + "px")
+                .style("top", (d3.event.pageY - 5) + "px");
+        })
+        .on("mouseout", function(d) {
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+        })
+        .transition()
+        .duration(1000)
+        .attr("cx",function(d,i){return d.a *10})
+        .attr("cy",function(d,i){return d.b *10});
 
 }
 
