@@ -6,6 +6,11 @@ var allWorldCupData;
  *
  * @param selectedDimension a string specifying which dimension to render in the bar chart
  */
+
+
+var tooltip = d3.select('body').append('div')
+    .attr('class', 'tooltip');
+
 function updateBarChart(selectedDimension) {
 
     var svgBounds = d3.select("#barChart").node().getBoundingClientRect(),
@@ -189,6 +194,50 @@ function updateInfo(oneWorldCup) {
 
 }
 
+
+function tooltipInfo(country_iso) {
+
+    participated = []
+    hosted = []
+    winner = []
+    runner_up = []
+    allWorldCupData.forEach(function (row) {
+        if (row.teams_iso.indexOf(country_iso) >= 0) {
+            participated.push(row.year);
+        }
+        if (row.host_country_code == country_iso) {
+            hosted.push(row.year);
+        }
+        if (row.winner.substring(0,3).toUpperCase() == country_iso) {
+            winner.push(row.year);
+        }
+        if (row.runner_up.substring(0,3).toUpperCase() == country_iso) {
+            runner_up.push(row.year);
+        }
+    })
+
+
+    part_info = "NEVER PARTICIPATED IN WORLD CUP";
+    host_info = "NEVER HOSTED A WORLD CUP";
+    winner_info="";
+    runner_up_info = "";
+
+    if (winner.length > 0){
+        winner_info = "<b>WINNER:</b></b><br/> " + runner_up.join("<br/>") + "<br/>" +"<br/>" ;
+    }
+    if (runner_up.length > 0){
+        runner_up_info = "<b>RUNNER UP:</b><br/> " + runner_up.join("<br/>") + "<br/>" + "<br/>" ;
+    }
+
+    if (hosted.length > 0) {
+        host_info = "<b>HOSTED:</b><br/> " + hosted.join("<br/>") +"<br/>" ;
+    }
+    if (participated.length > 0) {
+        part_info = "<b>PARTICIPATED:</b><br/> " + participated.join(", ");
+    }
+    return ( winner_info  + runner_up_info +  host_info+ "<br/>" + part_info);
+}
+
 /**
  * Renders and updated the map and the highlights on top of it
  *
@@ -205,6 +254,12 @@ function drawMap(world) {
     // Draw the background (country outlines; hint: use #map)
     // Make sure and add gridlines to the map
     var path = d3.geoPath().projection(projection);
+
+
+    var tooltip = d3.select(".tooltip")
+        .style("opacity", 0);
+    console.log(tooltip);
+
     d3.json('data/world.json', function(error, world) {
         var map = d3.select("#map");
         map.selectAll("path")
@@ -214,18 +269,33 @@ function drawMap(world) {
             .attr("d", path)
             .attr("id", function(d){
                 return d.id;
+            })
+// this is EXTRA CREDIT PART START
+            .on("click", function(d) {
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                tooltip.html(  tooltipInfo(d.id) )
+                    .style("left", (d3.event.pageX -0) + "px")
+                    .style("top", (d3.event.pageY - 5) + "px");
+            })
+            .on("mouseout", function(d) {
+                tooltip.transition()
+                    .duration(1500)
+                    .style("opacity", 0);
             });
+// this is EXTRA CREDIT PART ENTER
     });
 
 
 
     // Hint: assign an id to each country path to make it easier to select afterwards
     // we suggest you use the variable in the data element's .id field to set the id
-
-    // Make sure and give your paths the appropriate class (see the .css selectors at
-    // the top of the provided html file)
     var runner = d3.select("#points").append("circle").attr("id","runner_up_loc");
     var winner = d3.select("#points").append("circle").attr("id","winner_loc");
+    // Make sure and give your paths the appropriate class (see the .css selectors at
+    // the top of the provided html file)
+
 
 
 }
@@ -239,8 +309,6 @@ function clearMap() {
     //Clear the map of any colors/markers; You can do this with inline styling or by
     //defining a class style in styles.css
     d3.selectAll("#map").selectAll("path").classed("team",false).classed("host",false);
-
-
 
     //Hint: If you followed our suggestion of using classes to style
     //the colors and markers for hosts/teams/winners, you can use

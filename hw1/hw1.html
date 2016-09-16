@@ -9,9 +9,6 @@
             stroke: darkgray;
             stroke-width: 1px;
         }
-        .barChart rect:hover {
-            fill: seagreen;
-        }
         .lines {
             stroke: steelblue;
             fill: none
@@ -41,80 +38,84 @@
     </style>
 </head>
 <body>
+<h1>Homework 1 Solution</h1>
+    <h4> Debjyoti Paul </h4>
+    <h4> deb@cs.utah.edu </h4>
+    <h4> uNID: u0992708 </h4>
 
     <h2>Bar Charts</h2>
     <svg width="300" height="200">
         <rect x="50" y="50" width="100.0" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="60" width="80" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="70" width="130" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="80" width="90" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="90" width="110" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="100" width="140" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="110" width="60" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="120" width="40" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="130" width="120" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="140" width="70" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="150" width="50" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
     </svg>
 
     <svg width="300" height="200">
         <g transform="translate(10, 0) ">
         <rect x="50" y="50" width="80.4" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="60" width="69.5" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="70" width="75.8" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="80" width="88.1" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="90" width="83.3" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="100" width="99.6" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="110" width="72.4" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="120" width="42.6" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="130" width="108.4" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="140" width="48.2" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         <rect x="50" y="150" width="56.8" height="10"
-              style="fill:red; stroke:black; stroke-width:1px"/>
+              class="barChart"/>
         </g>
     </svg>
 
     <h2>Line Charts</h2>
-    <svg height="300" width="300">
+    <svg height="300" width="300" transform="rotate(-180)">
         <g  transform="rotate(180) translate(-300,-200)">
-        <path style="stroke:blue; fill:none" d="M 200 100 L 180 80 L 160 130 L 140 90 L 120 110 L 100 140 L 80 60 L 60 40 L 40 120 L 20 70 L 0 50"/>
+        <path class="lines" d="M 200 100 L 180 80 L 160 130 L 140 90 L 120 110 L 100 140 L 80 60 L 60 40 L 40 120 L 20 70 L 0 50"/>
         </g>
     </svg> 
 
 
     <svg height="300" width="300">
         <g  transform="rotate(180) translate(-300,-200)">
-         <line x1="200" y1="80.4" x2="180" y2="69.5" style="stroke:rgb(255,0,0);stroke-width:1" />
-         <line x1="180" y1="69.5" x2="160" y2="75.80" style="stroke:rgb(255,0,0);stroke-width:1" />
-         <line x1="160" y1="75.80" x2="140" y2="88.1" style="stroke:rgb(255,0,0);stroke-width:1" />
-         <line x1="140" y1="88.10" x2="120" y2="83.3" style="stroke:rgb(255,0,0);stroke-width:1" />
-         <line x1="120" y1="83.30" x2="100" y2="99.6" style="stroke:rgb(255,0,0);stroke-width:1" />
-         <line x1="100" y1="99.6" x2="80" y2="72.4" style="stroke:rgb(255,0,0);stroke-width:1" />
-         <line x1="80" y1="72.4" x2="60" y2="42.6" style="stroke:rgb(255,0,0);stroke-width:1" />
-         <line x1="60" y1="42.6" x2="40" y2="108.4" style="stroke:rgb(255,0,0);stroke-width:1" />
-         <line x1="40" y1="108.4" x2="20" y2="48.2" style="stroke:rgb(255,0,0);stroke-width:1" />
-         <line x1="20" y1="48.2" x2="0" y2="56.8" style="stroke:rgb(255,0,0);stroke-width:1" />
+         <line x1="200" y1="80.4" x2="180" y2="69.5" class="lines" />
+         <line x1="180" y1="69.5" x2="160" y2="75.80" class="lines" />
+         <line x1="160" y1="75.80" x2="140" y2="88.1" class="lines" />
+         <line x1="140" y1="88.10" x2="120" y2="83.3" class="lines" />
+         <line x1="120" y1="83.30" x2="100" y2="99.6" class="lines" />
+         <line x1="100" y1="99.6" x2="80" y2="72.4" class="lines" />
+         <line x1="80" y1="72.4" x2="60" y2="42.6" class="lines" />
+         <line x1="60" y1="42.6" x2="40" y2="108.4" class="lines" />
+         <line x1="40" y1="108.4" x2="20" y2="48.2" class="lines" />
+         <line x1="20" y1="48.2" x2="0" y2="56.8" class="lines" />
         </g>
     </svg> 
 
@@ -123,21 +124,21 @@
     <h2> Area Charts </h2>
     <svg width="300" height="300">
         <g transform="rotate(180) translate(-300,-200)">
-        <path style="stroke:seagreen; fill:seagreen;" d="M 200 100 L 180 80 L 160 130 L 140 90 L 120 110 L 100 140 L 80 60 L 60 40 L 40 120 L 20 70 L 0 50 L 0 0 L 200 0 Z"/>
+        <path class="areas" d="M 200 100 L 180 80 L 160 130 L 140 90 L 120 110 L 100 140 L 80 60 L 60 40 L 40 120 L 20 70 L 0 50 L 0 0 L 200 0 Z"/>
         </g>
     </svg>
 
 
     <svg width="300" height="300">
         <g transform="rotate(180) translate(-300,-200)">
-        <path style="stroke:seagreen; fill:seagreen;" d="M 200 80.4 L 180 69.5 L 160 75.8 L 140 88.1 L 120 83.3 L 100 99.6 L 80 72.4 L 60 42.6 L 40 108.4 L 20 48.2 L 0 56.8 L 0 0 L 200 0 Z"/>
+        <path class="areas" d="M 200 80.4 L 180 69.5 L 160 75.8 L 140 88.1 L 120 83.3 L 100 99.6 L 80 72.4 L 60 42.6 L 40 108.4 L 20 48.2 L 0 56.8 L 0 0 L 200 0 Z"/>
         </g>
     </svg>
 
     <h2> Scatterplot </h2>
     <svg width="300" height="300">
         <g transform="scale(1,-1) translate(100,-200)">
-        <path style="stroke:black; fill:none;" d="M 0 0 L 200 0 L 200 200 L 0 200 Z"/>
+        <path class="frame" d="M 0 0 L 200 0 L 200 200 L 0 200 Z"/>
         <circle cx="100" cy="80.4" r="5"/>
         <circle cx="80" cy="69.5" r="5"/>
         <circle cx="130" cy="75.8" r="5"/>

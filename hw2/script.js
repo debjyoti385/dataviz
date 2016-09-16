@@ -210,7 +210,7 @@ function update(error, data) {
     // TODO: Select and update the 'b' area chart path (create your own generator)
 
     var areachartsvg1 = d3.select("#areachart1");
-    
+
     var selection5 = areachartsvg1
         .transition()
         .duration(1500)

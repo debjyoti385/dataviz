@@ -142,6 +142,21 @@ header {
 
 }
 
+
+.hidden {
+    display: none;
+}
+
+div.tooltip {
+    max-width: 400px;
+    position:absolute;
+    border:1px solid #333;
+    background-color:#161616;
+    border-radius:5px;
+    padding:10px;
+    color:#fff;
+}
+
 /* Styles that clean up the layout;
  * you can ignore these: */
 
