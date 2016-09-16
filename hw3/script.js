@@ -218,7 +218,7 @@ function tooltipInfo(country_iso) {
 
 
     part_info = "NEVER PARTICIPATED IN WORLD CUP";
-    host_info = "NEVER HOSTED A WORLD CUP";
+    host_info = "";
     winner_info="";
     runner_up_info = "";
 
@@ -235,7 +235,7 @@ function tooltipInfo(country_iso) {
     if (participated.length > 0) {
         part_info = "<b>PARTICIPATED:</b><br/> " + participated.join(", ");
     }
-    return ( winner_info  + runner_up_info +  host_info+ "<br/>" + part_info);
+    return ( country_iso + "<br/>" + winner_info  + runner_up_info +  host_info+ "<br/>" + part_info);
 }
 
 /**
@@ -260,8 +260,10 @@ function drawMap(world) {
         .style("opacity", 0);
     console.log(tooltip);
 
+    var map = d3.select("#map");
+
     d3.json('data/world.json', function(error, world) {
-        var map = d3.select("#map");
+
         map.selectAll("path")
             .data(topojson.feature(world, world.objects.countries).features)
             .enter().append("path")
@@ -287,17 +289,20 @@ function drawMap(world) {
 // this is EXTRA CREDIT PART ENTER
     });
 
-
+    var graticule = d3.geoGraticule()
+    map.append("path")
+        .datum(graticule)
+        .attr("class", "grat")
+        .attr("d", path);
 
     // Hint: assign an id to each country path to make it easier to select afterwards
     // we suggest you use the variable in the data element's .id field to set the id
-    var runner = d3.select("#points").append("circle").attr("id","runner_up_loc");
-    var winner = d3.select("#points").append("circle").attr("id","winner_loc");
+
     // Make sure and give your paths the appropriate class (see the .css selectors at
     // the top of the provided html file)
-
-
-
+    var runner = d3.select("#points").append("circle").attr("id","runner_up_loc");
+    var winner = d3.select("#points").append("circle").attr("id","winner_loc");
+    
 }
 
 /**
