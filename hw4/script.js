@@ -62,8 +62,18 @@ var rank = {
 
 d3.json('data/fifa-matches.json',function(error,data){
     teamData = data;
+
+
+    teamData.map(function(d){
+        d.value.selected = false;
+    })
+
+
+
     createTable();
     updateTable();
+
+
 })
 
 
@@ -138,6 +148,8 @@ function createTable() {
  */
 function updateTable() {
 
+    console.log("updatetable");
+
 // ******* TODO: PART III *******
     //  SELECT, ENTER, EXIT AND MERGE tr ELEMENT
     var tr = d3.select("tbody").selectAll("tr").data(teamData);
@@ -148,14 +160,38 @@ function updateTable() {
 
     // PASS DATA ELEMENTS TO EACH td ELEMENT ACCORDING TO THE VIZ
     var td = tr.selectAll('td').data(function(d){
-        return [
-            {'type': d.value.type, 'vis': 'text', 'value': d.key, 'title': true},
-            {'type':d.value.type,'vis':'goals','value':[d.value[goalsMadeHeader],d.value[goalsConcededHeader],d.value[deltaGoalsHeader]]},
-            {'type':d.value.type,'vis':'text','value':[d.value[resultHeader][resultLabelHeader]] },
-            {'type':d.value.type,'vis':'bar','value': [d.value[winHeader]] },
-            {'type':d.value.type,'vis':'bar','value': [d.value[lossHeader]] },
-            {'type':d.value.type,'vis':'bar','value': [d.value[totalGamesHeader]] }
-        ];
+        //if(d.value.selected == true){
+        //    console.log(d);
+        //    return [
+        //        {'data':d, 'type': d.value.type, 'vis': 'text', 'value': d.key, 'title': true},
+        //        {
+        //            'type': d.value.type,
+        //            'vis': 'goals',
+        //            'value': [d.value[goalsMadeHeader], d.value[goalsConcededHeader], d.value[deltaGoalsHeader]]
+        //        },
+        //        {'type': d.value.type, 'vis': 'text', 'value': [d.value[resultHeader][resultLabelHeader]]},
+        //        {'type': d.value.type, 'vis': 'bar', 'value': [d.value[winHeader]]},
+        //        {'type': d.value.type, 'vis': 'bar', 'value': [d.value[lossHeader]]},
+        //        {'type': d.value.type, 'vis': 'bar', 'value': [d.value[totalGamesHeader]]}
+        //    ];
+        //}
+        //else {
+        //console.log(d)
+        //if (d.value.type != "aggregate")
+        //    console.log(d);
+           return [
+                {'type': d.value.type, 'vis': 'text', 'value': d.key, 'title': true},
+                {
+                    'type': d.value.type,
+                    'vis': 'goals',
+                    'value': [d.value[goalsMadeHeader], d.value[goalsConcededHeader], d.value[deltaGoalsHeader]]
+                },
+                {'type': d.value.type, 'vis': 'text', 'value': [d.value[resultHeader][resultLabelHeader]]},
+                {'type': d.value.type, 'vis': 'bar', 'value': [d.value[winHeader]]},
+                {'type': d.value.type, 'vis': 'bar', 'value': [d.value[lossHeader]]},
+                {'type': d.value.type, 'vis': 'bar', 'value': [d.value[totalGamesHeader]]}
+            ];
+        //}
     });
 
     var td_enter = td.enter()
@@ -167,7 +203,7 @@ function updateTable() {
             return d.vis == "text";
         })
         .text(function(d){
-            return d.value;
+                return d.value;
         });
 
     var td_names  = td_text.filter(function(d){
@@ -177,8 +213,24 @@ function updateTable() {
            return d.type;
         })
         .on("click", function(d){
-            console.log(d );
-
+            var position = 0;
+            for (var l = 0; l < teamData.length; l++) {
+                if (teamData[l].key == d.value && teamData[l].value.type == "aggregate") {
+                    position = l;
+                    break;
+                }
+            }
+            if (d.type == "aggregate" && teamData[position].value.selected  != true ) {
+                teamData[position].value.selected = true;
+                teamData[position].value.games.forEach(function (f) {
+                    teamData.splice(position + 1, 0, f);
+                });
+            }
+            else if (d.type == "aggregate" && teamData[position].value.selected  == true ) {
+                teamData[position].value.selected = false;
+                teamData.splice(position + 1,teamData[position].value[gameHeader].length);
+            }
+            updateTable();
         });
 
     var td_bars = td.filter(function (d){
@@ -197,9 +249,7 @@ function updateTable() {
 
     td_bars = td_bars_enter.merge(td_bars);
 
-    var rects = td_bars.filter(function (d) {
-            return d.type == "aggregate";
-        })
+    var rects = td_bars
         .selectAll("rect").data(function (d) {
         return [d];
     });
@@ -213,15 +263,17 @@ function updateTable() {
     rects = rects_enter.merge(rects);
 
     rects.attr("width", function(d){
+            if (d.type == "aggregate") {
                 return gameScale(d.value);
+            }
         })
         .attr("fill", function(d){
+            if (d.type == "aggregate") {
                 return aggregateColorScale(d.value);
+            }
         });
 
-    var rects_text = td_bars.filter(function (d) {
-            return d.type == "aggregate";
-        })
+    var rects_text = td_bars
         .selectAll("text").data(function(d){
         return [d];
     });
@@ -234,13 +286,20 @@ function updateTable() {
 
     rects_text.exit().remove();
 
-    rects_text = rects_text_enter.merge(rects_enter);
+    rects_text = rects_text_enter.merge(rects_text);
 
     rects_text.attr("x", function(d) {
-                return  gameScale(d.value) - textMargin ;
+                if (d.type == "aggregate") {
+                    console.log(d.type + "aggregate");
+                        return  gameScale(d.value) - textMargin ;
+                }
             })
             .text(function(d) {
+                if (d.type == "aggregate") {
                     return d.value;
+                }
+                console.log("here");
+                return "";
             });
 
 
@@ -288,11 +347,11 @@ function updateTable() {
             return goalScale(max_val) - goalScale(min_val);
         })
         .attr("x", function(d){
-            max_val  = d.value[0] > d.value[1] ? d.value[0] : d.value[1];
-            return goalScale(max_val);
+            min_val  = d.value[1]  < d.value[0] ? d.value[1] : d.value[0];
+            return goalScale(min_val);
         })
         .attr("y",function(d) {
-            return (cellHeight/2);
+            return (cellHeight/4);
         })
         .attr("height",function(d) {
             return (cellHeight/2);
@@ -308,11 +367,11 @@ function updateTable() {
             return goalScale(max_val) - goalScale(min_val);
         })
         .attr("x", function(d){
-            max_val  = d.value[0] > d.value[1] ? d.value[0] : d.value[1];
-            return goalScale(max_val);
+            min_val  = d.value[1]  < d.value[0] ? d.value[1] : d.value[0];
+            return goalScale(min_val);
         })
         .attr("y",function(d) {
-            return (cellHeight/2);
+            return (cellHeight/2.75);
         })
         .attr("height",function(d) {
             return (barHeight/4);
@@ -323,91 +382,59 @@ function updateTable() {
 
     // CREATE THE CIRCLES
 
-    //var td_goals_circle = td_goals_svg.selectAll("circle").data(function(d){
-    //    console.log(d);
-    //    return [d];
-    //});
-    //
-    //var td_goals_circle_enter = td_goals_circle.enter()
-    //    .append("circle")
-    //    .attr("cy",cellHeight/2)
-    //    .attr("class", "goalCircle");
-    //
-    //td_goals_circle.exit().remove();
-    //
-    //td_goals_circle = td_goals_circle_enter.merge(td_goals_circle);
-    //
-    //var td_goals_circle_aggregate = td_goals_circle.filter(function(d){
-    //    return d.type == "aggregate";
-    //}).data(function(d){
-    //    return [
-    //        {"value": [d.value[0], d.value[2]]},
-    //        {"value": [d.value[1], d.value[2]]}
-    //        ];
-    //});
-    //
-    //var td_goals_circle_games = td_goals_circle.filter(function(d){
-    //    return d.type == "game";
-    //}).data(function(d){
-    //    return [
-    //        {"value": [d.value[0], d.value[0] - d.value[1] ]},
-    //        {"value": [d.value[1], d.value[0] - d.value[1] ]}
-    //    ];
-    //});
-    //
-    //
-    //td_goals_circle_aggregate = td_goals_circle_aggregate.enter()
-    //    .append("circle")
-    //    .attr("cy",cellHeight/2)
-    //    .attr("class","goalCircleAgg")
-    //    .merge(td_goals_circle_aggregate);
-    //
-    //td_goals_circle_aggregate
-    //    .attr("cx",function(d){
-    //        return goalScale(d.value[0]);
-    //    })
-    //    .attr("height",function(d) {
-    //        return (cellHeight/2);
-    //    })
-    //    .attr("fill",function(d, i) {
-    //        colors = ["#045d95", "#a01317"]
-    //        return colors[i];
-    //    })
-    //    .attr("stroke",function(d,i) {
-    //
-    //    });
-    //
-    //
-    //td_goals_circle_games = td_goals_circle_games.enter()
-    //    .append("circle")
-    //    .attr("cy",cellHeight/2)
-    //    .attr("class","goalCircle")
-    //    .merge(td_goals_circle_games);
-    //
-    ////td_goals_circle_games
-    ////    .attr("cx",function(d){
-    ////        return goalScale(d.value[0]);
-    ////    })
-    //    //.attr("x", function(d){
-    //    //    max_val  = d.value[0] > d.value[1] ? d.value[0] : d.value[1];
-    //    //    return goalScale(max_val);
-    //    //})
-    //    //.attr("y",function(d) {
-    //    //    return (cellHeight/2);
-    //    //})
-    //    //.attr("height",function(d) {
-    //    //    return (barHeight/4);
-    //    //})
-    //    //.attr("fill",function(d) {
-    //    //    return goalColorScale(d.value[0]-d.value[1]);
-    //    //})
-    //    //;
-    //
+    var td_goals_circle = td_goals_svg.selectAll("circle").data(function(d){
+        if(d.type == "aggregate") {
+            return [
+                {"type": d.type, "value": [d.value[0], d.value[2]]},
+                {"type": d.type, "value": [d.value[1], d.value[2]]}
+            ];
+        }
+        else{
+            return [
+                {"type": d.type, "value": [d.value[0], d.value[0] - d.value[1]]},
+                {"type": d.type, "value": [d.value[1], d.value[0] - d.value[1]]}
+            ];
+        }
+    });
+
+    var td_goals_circle_enter = td_goals_circle.enter()
+        .append("circle")
+        .attr("cy",cellHeight/2)
+        .attr("class", "goalCircle");
+
+    td_goals_circle.exit().remove();
+
+    td_goals_circle = td_goals_circle_enter.merge(td_goals_circle);
 
 
+    td_goals_circle
+        .attr("cx",function(d){
+                return goalScale(d.value[0]);
+        })
+        //.attr("height",function(d) {
+        //    if (d.type == "aggregate")
+        //        return (cellHeight/2);
+        //})
+        .attr("fill",function(d, i) {
+            if (d.type == "aggregate") {
+                colors = ["#045d95", "#a01317"]
+                return colors[i];
+            }
+            else{
+                return "white";
+            }
+        })
+        .attr("stroke",function(d,i) {
+            if (d.type == "aggregate") {
+                if (d.value[1] == 0) {
+                    return "grey";
+                }
+            }else {
+                colors = ["#045d95", "#a01317"]
+                return colors[i];
+            }
 
-
-
+        });
 
 
 };
@@ -420,6 +447,14 @@ function updateTable() {
 function collapseList() {
 
     // ******* TODO: PART IV *******
+    var i = 0;
+    while(i < teamData.length -1){
+        if(teamData[i].value.type == "aggregate" && teamData[i+1].value.type == "game"){
+            teamData.splice(i+1,teamData[i].value[gameHeader].length);
+        }
+        i++;
+    }
+
 
 
 }
