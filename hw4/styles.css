@@ -12,6 +12,12 @@ th {
     min-width: 125px;
 }
 
+.right-align {
+    font-weight: normal;
+    text-align: right;
+    padding-right: 6px;
+}
+
 thead td , th{
     cursor: s-resize;
 }

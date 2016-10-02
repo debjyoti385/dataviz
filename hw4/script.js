@@ -13,6 +13,9 @@ var cellWidth = 70,
     heightMargin = 2,
     textMargin = 9;
 
+
+var colors = [ "#a01317" ,"#045d95"];
+
 /**Set variables for commonly accessed data columns*/
 var goalsMadeHeader = 'Goals Made',
     goalsConcededHeader = 'Goals Conceded',
@@ -57,6 +60,139 @@ var rank = {
 
 
 
+// Add property to the element for sorting
+var table_header = d3.select("thead").select("tr");
+table_header.select("th")
+    .attr("asc",1);
+table_header.selectAll("td")
+    .attr("asc",1);
+
+
+
+
+
+function sort_update(column, order){
+
+    console.log(column);
+    collapseList();
+
+    switch(column) {
+        case "team":
+            teamData.sort(function (a, b) {
+                if (order == 0) {
+                    return d3.ascending(a.key, b.key);
+                }
+                else {
+                    return d3.descending(a.key, b.key);
+                }
+            });
+            teamData.forEach(function(f){
+                f.value.games.sort(function (a, b) {
+                    if (order == 0) {
+                        return d3.descending(a.key, b.key);
+                    }
+                    else{
+                        return d3.ascending(a.key, b.key);
+
+                    }
+                });
+            });
+
+
+
+            break;
+
+        case "goals":
+            console.log("Sorting " + order);
+            teamData.sort(function (a, b) {
+                if (order == 1) {
+                    return d3.ascending(a.value[deltaGoalsHeader], b.value[deltaGoalsHeader]);
+                }
+                else{
+                    return d3.descending(a.value[deltaGoalsHeader], b.value[deltaGoalsHeader]);
+                }
+            });
+
+            teamData.forEach(function(f){
+                f.value.games.sort(function (a, b) {
+                    if (order == 1) {
+                        return d3.ascending(a.value[deltaGoalsHeader], b.value[deltaGoalsHeader]);
+                    }
+                    else{
+                        return d3.descending(a.value[deltaGoalsHeader], b.value[deltaGoalsHeader]);
+                    }
+                });
+            });
+
+            break;
+
+        case "round/result":
+            teamData.sort(function (a, b) {
+                if (order == 1) {
+                    return d3.ascending(a.value[resultHeader][resultRankingHeader], b.value[resultHeader][resultRankingHeader]);
+                }
+                else {
+                    return d3.descending(a.value[resultHeader][resultRankingHeader], b.value[resultHeader][resultRankingHeader]);
+                }
+            });
+
+            teamData.forEach(function(f){
+                f.value.games.sort(function (a, b) {
+                    if (order == 1) {
+                        return d3.descending(a.value[resultHeader][resultRankingHeader], b.value[resultHeader][resultRankingHeader]);
+                    }
+                    else{
+                        return d3.ascending(a.value[resultHeader][resultRankingHeader], b.value[resultHeader][resultRankingHeader]);
+                    }
+                });
+            });
+
+            break;
+
+        case "wins":
+            teamData.sort(function (a, b) {
+                if (order == 1) {
+                    return d3.ascending(a.value[winHeader], b.value[winHeader]);
+                }
+                else {
+                    return d3.descending(a.value[winHeader], b.value[winHeader]);
+                }
+            });
+
+
+            break;
+
+        case "losses":
+            teamData.sort(function (a, b) {
+                if (order == 1) {
+                    return d3.ascending(a.value[lossHeader], b.value[lossHeader]);
+                }
+                else {
+                    return d3.descending(a.value[lossHeader], b.value[lossHeader]);
+                }
+            });
+
+
+            break;
+        case "total":
+            teamData.sort(function (a, b) {
+                if (order == 1) {
+                    return d3.ascending(a.value[totalGamesHeader], b.value[totalGamesHeader]);
+                }
+                else {
+                    return d3.descending(a.value[totalGamesHeader], b.value[totalGamesHeader]);
+                }
+            });
+
+            break;
+    }
+
+            updateTable();
+}
+
+
+
+
 //For the HACKER version, comment out this call to d3.json and implement the commented out
 // d3.csv call below.
 
@@ -68,13 +204,10 @@ d3.json('data/fifa-matches.json',function(error,data){
         d.value.selected = false;
     })
 
-
-
     createTable();
     updateTable();
 
-
-})
+});
 
 
 // // ********************** HACKER VERSION ***************************
@@ -139,6 +272,27 @@ function createTable() {
 
 // ******* TODO: PART V *******
 
+
+    var table_header = d3.select("thead").select("tr");
+    table_header.select("th")
+        .on("click",function(){
+            console.log(d3.select(this).html().trim().split(" ")[0].trim() + d3.select(this).attr("asc") );
+
+            var order = d3.select(this).attr("asc");
+            d3.select(this).attr("asc", order == 0? 1:0);
+            d3.select(this).attr("asc");
+            sort_update(d3.select(this).html().trim().split(" ")[0].trim().toLowerCase() , d3.select(this).attr("asc") );
+        });
+    table_header.selectAll("td")
+        .on("click",function(){
+            console.log(d3.select(this).html().trim().split(" ")[0].trim() + d3.select(this).attr("asc") );
+            var order = d3.select(this).attr("asc");
+            console.log(order);
+            d3.select(this).attr("asc", order == 0? 1:0);
+            console.log(d3.select(this).attr("asc"));
+            sort_update(d3.select(this).html().trim().split(" ")[0].trim().toLowerCase() , d3.select(this).attr("asc") );
+        });
+
 }
 
 /**
@@ -199,6 +353,12 @@ function updateTable() {
         .attr("class", function(d){
            return d.type;
         })
+        .classed("right-align",function(d){
+            if (d.title == true){
+                return true;
+            }
+            return false;
+        })
         .on("click", function(d){
             var position = 0;
             for (var l = 0; l < teamData.length; l++) {
@@ -207,6 +367,9 @@ function updateTable() {
                     break;
                 }
             }
+
+            // ******* TODO: PART IV *******
+
             if (d.type == "aggregate" && teamData[position].value.selected  != true ) {
                 teamData[position].value.selected = true;
                 teamData[position].value.games.forEach(function (f) {
@@ -395,7 +558,6 @@ function updateTable() {
         //})
         .attr("fill",function(d, i) {
             if (d.type == "aggregate") {
-                colors = ["#045d95", "#a01317"]
                 return colors[i];
             }
             else{
@@ -425,12 +587,13 @@ function updateTable() {
 function collapseList() {
 
     // ******* TODO: PART IV *******
-    var i = 0;
-    while(i < teamData.length -1){
+    teamData.map(function(d){
+        d.value.selected = false;
+    });
+    for(var i=0; i < teamData.length -1; i++){
         if(teamData[i].value.type == "aggregate" && teamData[i+1].value.type == "game"){
             teamData.splice(i+1,teamData[i].value[gameHeader].length);
         }
-        i++;
     }
 
 
@@ -441,10 +604,10 @@ function collapseList() {
  * Updates the global tableElements variable, with a row for each row to be rendered in the table.
  *
  */
-function updateList(i) {
+function updateList(position) {
 
     // ******* TODO: PART IV *******
-
+    // ADDED THIS PART IN CLICK FUNCTION
 
 }
 
@@ -466,23 +629,20 @@ function createTree(treeData) {
         })
         (treeData);
 
-    var tree_svg_height = d3.select("#tree_svg").node().getBoundingClientRect().height * 0.75;
-    var tree_svg_width = d3.select("#tree_svg").node().getBoundingClientRect().width  *.75;
+    var tree_svg_height = d3.select("#tree_svg").node().getBoundingClientRect().height * 0.65;
+    var tree_svg_width = d3.select("#tree_svg").node().getBoundingClientRect().width  *.65;
 
-    d3.select("#tree_svg").select("g").attr("transform","translate(20,0)");
+    d3.select("#tree_svg").select("g").attr("transform","translate(70,30)");
     var tree_layout = d3.tree()
         .size([tree_svg_height, tree_svg_width]);
 
     var nodes = tree_layout(root);
 
-    //console.log(nodes);
+
     var paths = d3.select("#tree").selectAll("path").data(nodes.descendants().slice(1))
         .enter().append("path")
         .attr("class","link");
-    //var path_enter = paths
 
-    //paths.exit().remove();
-    //path_enter.merge(paths);
 
     paths.attr("d", function(d) {
         return "M" + d.y + "," + d.x
@@ -499,33 +659,37 @@ function createTree(treeData) {
     tree_nodes = tree_nodes
         .enter()
         .append("g")
-        .attr("class","node")
-        //.attr("transform","translate("+ d.children ? 20 : 0 + ",0)")
-        ;
+        .attr("class","node");
 
     tree_nodes.append("circle")
         .attr("r",8)
         .attr("cx",function(d){
-            console.log(d);
                 return d.y;
         })
         .attr("cy",function(d){
             return d.x;
+        })
+        .style("fill", function(d){
+
+            if (d.data.Wins == 1){
+                return colors[1];
+            }
+            else{
+                return colors[0];
+            }
         });
 
     tree_nodes
         .append("text")
+        .attr("x", function(d) {
+            return d.y;
+        })
         .attr("y", function(d) {
             return d.x;
         })
-        .attr("x", function(d) {
-            if(d.parent == null)
-                return d.y;
-            return d.y;
-        })
-        .attr("dy","5")
+        .attr("dy",5)
         .attr("dx",function(d){
-            return d.children ? 50 : -50;
+            return d.children ? -10 : 10;
         })
         .style("text-anchor", function(d) {
             return d.children ? "end" : "start";
@@ -533,8 +697,6 @@ function createTree(treeData) {
         .text(function(d) {
             return d.data.Team;
         });
-
-
 
 
 };
@@ -545,55 +707,19 @@ function createTree(treeData) {
  *
  * @param team a string specifying which team was selected in the table.
  */
-//function updateTree(row) {
-//
-//    // ******* TODO: PART VII *******
-//
-//    var highlight = d3.selectAll(".link").filter(function(d){
-//        return row.key == d.data.Team  && d.data.Wins == "1";
-//    });
-//
-//    highlight.classed("selected",true);
-//
-//    var label = d3.select("#tree").selectAll("text").filter(function(d){
-//        return row.key == d.data.Team;
-//    });
-//
-//    label.classed("selectedLabel",true);
-//
-//
-//}
-
-/**
- * Removes all highlighting from the tree.
- */
-function clearTree() {
-
-    // ******* TODO: PART VII *******
-    d3.selectAll(".selected").classed("selected",false);
-
-    d3.selectAll(".selectedLabel").classed("selectedLabel",false);
-    
-
-}
-
-
 
 function updateTree(row) {
 
     // ******* TODO: PART VII ****
-    //console.log(row.key);
-    //console.log(row.value);
 
     d3.select("#tree")
         .selectAll("text")
         .filter(function(d){
-            // console.log(d.data);
             if(row.value.type == 'game') {
-                var isPartLabel = false;
+                var label = false;
                 if ((d.id.match(row.key+"*") && row.value.Opponent.match(d.data.Opponent)) || (row.key.match(d.data.Opponent) && row.value.Opponent.match(d.data.Team)))
-                    isPartLabel = true;
-                return isPartLabel;
+                    label = true;
+                return label;
             }else
                 return row.key == d.data.Team;
         })
@@ -601,22 +727,33 @@ function updateTree(row) {
 
     d3.selectAll(".link")
         .filter(function(d){
+            var link = false;
             if(row.value.type == 'game') {
-                var isPartLink = false;
                 if ((d.id.match(row.key+"*") && row.value.Opponent.match(d.data.Opponent)) || (row.key.match(d.data.Opponent) && row.value.Opponent.match(d.data.Team)))
-                    isPartLink = true;
-                return isPartLink;
+                    link = true;
+                return link;
             }else{
-                var isPartLink = false;
-                if(row.key == d.data.Team  && d.data.Wins == "1")
-                    isPartLink = true;
-                return isPartLink;
+                if(row.key == d.data.Team  && d.data.Wins == 1)
+                    link = true;
+                return link;
             }
 
         })
         .classed("selected",true);
-
 }
 
 
+
+
+
+/**
+ * Removes all highlighting from the tree.
+ */
+function clearTree() {
+    // ******* TODO: PART VII *******
+    d3.selectAll(".selected").classed("selected",false);
+    d3.selectAll(".selectedLabel").classed("selectedLabel",false);
+    
+
+}
 
