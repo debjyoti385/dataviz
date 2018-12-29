@@ -1,2 +1,3 @@
-# datavis
-Data Visualization Course Fall 2016
+# Data Visualization Course
+## University of Utah
+
