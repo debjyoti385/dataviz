@@ -109,7 +109,7 @@ YearChart.prototype.update = function(){
             console.log("data/year_timeline_"+ d.YEAR+".csv")
             d3.selectAll("circle").classed("highlighted",false);
             d3.select(this).classed("highlighted",true);
-            d3.csv("data/year_timeline_"+ d.YEAR+".csv",function (error, electionResult) {
+            d3.csv("dataviz/hw5/data/Year_Timeline_"+ d.YEAR+".csv",function (error, electionResult) {
                 self.votePercentageChart.update(electionResult,self.colorScale);
                 self.tileChart.update(electionResult,self.colorScale);
                 self.electoralVoteChart.update(electionResult,self.colorScale);
